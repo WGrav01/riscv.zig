@@ -16,52 +16,52 @@ pub const Base = enum {
 };
 
 /// Struct that defines what extensions are in use
-pub const Extentions = struct {
+pub const Extensions = struct {
     /// Standard Extension for Integer Multiplication and Division
-    m: bool = undefined,
+    m: bool = false,
 
     /// Standard Extension for Atomic Instructions
-    a: bool = undefined,
+    a: bool = false,
 
     /// Standard Extension for Single-Precision Floating-Point
-    f: bool = undefined,
+    f: bool = false,
 
     /// Standard Extension for Double-Precision Floating-Point
-    d: bool = undefined,
+    d: bool = false,
 
     /// Shorthand for the base and above extensions
-    g: bool = undefined,
+    g: bool = false,
 
     /// Standard Extension for Quad-Precision Floating-Point
-    q: bool = undefined,
+    q: bool = false,
 
     /// Standard Extension for Decimal Floating-Point
-    l: bool = undefined,
+    l: bool = false,
 
     /// Standard Extension for Compressed Instructions
-    c: bool = undefined,
+    c: bool = false,
 
     /// Standard Extension for Bit Manipulation
-    b: bool = undefined,
+    b: bool = false,
 
     /// Standard Extension for Dynamically Translated Languages
-    j: bool = undefined,
+    j: bool = false,
 
     /// Standard Extension for Transactional Memory
-    t: bool = undefined,
+    t: bool = false,
 
     /// Standard Extension for Packed-SIMD Instructions
-    p: bool = undefined,
+    p: bool = false,
 
     /// Standard Extension for Vector Operations
-    v: bool = undefined,
+    v: bool = false,
 
     /// Standard Extension for User-Level Interrupts
-    n: bool = undefined,
+    n: bool = false,
 
     /// Standard Extension for Hypervisor
-    h: bool = undefined,
+    h: bool = false,
 
     /// Standard Extension for Supervisor-level Instructions
-    s: bool = undefined,
+    s: bool = false,
 };
