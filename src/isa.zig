@@ -1,66 +1,67 @@
-/// Struct that defines what modules are in use
-const ISAconfig = struct {
-    // Core ISA:
+//! Definitions for instruction sets and extensions
 
-    /// Base Integer Instruction Set - 32-bit
-    rv32i: bool,
+/// Enum for which base instruction set is in use
+pub const Base = enum {
+    /// 32 bit base integer instruction set
+    rv32i,
 
-    /// Base Integer Instruction Set (embedded) - 32-bit, 16 registers
-    rv32e: bool,
+    /// Embedded version of the 32 bit base integer instruction set, with 16 registers
+    rv32e,
 
-    /// Base Integer Instruction Set - 64-bit
-    rv64i: bool,
+    /// 64 bit base integer instruction set
+    rv64i,
 
-    /// Base Integer Instruction Set - 128-bit
-    rv128i: bool,
+    /// 128 bit base integer instruction set
+    rv128i,
+};
 
-    // Extentions:
-
+/// Struct that defines what extensions are in use
+pub const Extentions = struct {
     /// Standard Extension for Integer Multiplication and Division
-    m: bool,
+    m: bool = undefined,
 
     /// Standard Extension for Atomic Instructions
-    a: bool,
+    a: bool = undefined,
 
     /// Standard Extension for Single-Precision Floating-Point
-    f: bool,
+    f: bool = undefined,
 
     /// Standard Extension for Double-Precision Floating-Point
-    d: bool,
+    d: bool = undefined,
 
     /// Shorthand for the base and above extensions
-    g: bool,
+    g: bool = undefined,
 
     /// Standard Extension for Quad-Precision Floating-Point
-    q: bool,
+    q: bool = undefined,
 
     /// Standard Extension for Decimal Floating-Point
-    l: bool,
+    l: bool = undefined,
 
     /// Standard Extension for Compressed Instructions
-    c: bool,
+    c: bool = undefined,
 
     /// Standard Extension for Bit Manipulation
-    b: bool,
+    b: bool = undefined,
 
     /// Standard Extension for Dynamically Translated Languages
-    j: bool,
+    j: bool = undefined,
 
     /// Standard Extension for Transactional Memory
-    t: bool,
+    t: bool = undefined,
 
     /// Standard Extension for Packed-SIMD Instructions
-    p: bool,
+    p: bool = undefined,
 
     /// Standard Extension for Vector Operations
-    v: bool,
+    v: bool = undefined,
 
     /// Standard Extension for User-Level Interrupts
-    n: bool,
+    n: bool = undefined,
 
     /// Standard Extension for Hypervisor
-    h: bool,
+    h: bool = undefined,
 
     /// Standard Extension for Supervisor-level Instructions
-    s: bool,
+    s: bool = undefined,
 };
