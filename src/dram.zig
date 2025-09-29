@@ -5,7 +5,7 @@ pub const DRAMError = error{
     OutOfBounds,
 };
 
-const default_base: usize = 0x80000000;
+pub const default_base: usize = 0x80000000;
 
 /// Emulated dynamic random access memory
 pub const DRAM = struct {
