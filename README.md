@@ -36,7 +36,7 @@ zig test
     ```
     And, before `installArtifact` is called: (this assumes your main module is called `exe`)
     ```zig
-    exe.root_module.addImport("", riscv.module("riscv_zig"));
+    exe.root_module.addImport("riscv", riscv.module("riscv_zig"));
     ```
 3) Now, you can use the library in your project 
     ```zig
