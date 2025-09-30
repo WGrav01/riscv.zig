@@ -4,18 +4,18 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const mod = b.addModule("riscv_zig", .{
-        .root_source_file = b.path("src/root.zig"),
+        .root_source_file = b.path("lib/root.zig"),
         .target = target,
     });
 
     const exe = b.addExecutable(.{
         .name = "riscv_zig",
         .root_module = b.createModule(.{
-            .root_source_file = b.path("src/main.zig"),
+            .root_source_file = b.path("exe/main.zig"),
             .target = target,
             .optimize = optimize,
             .imports = &.{
-               .{ .name = "riscv_zig", .module = mod },
+                .{ .name = "riscv_zig", .module = mod },
             },
         }),
     });
@@ -48,5 +48,4 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run tests");
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_exe_tests.step);
-
 }
