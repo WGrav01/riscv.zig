@@ -71,7 +71,7 @@ I will be happy to help you. However, please do not open an issue unless you are
 This project is licensed under the [MIT License](https://opensource.org/license/MIT). You can view it in this repository [here](https://github.com/WGrav01/riscv.zig/blob/main/LICENSE.md).
 
 ## Credits:
-- Inspired heavily by [mini-rv32ima](https://github.com/cnlohr/mini-rv32ima)
+- Inspired heavily by [mini-rv32ima](https://github.com/cnlohr/mini-rv32ima).
 - A lot of info used from [fmash16's project](https://fmash16.github.io/content/posts/riscv-emulator-in-c.html).
 - As well as from *[Writing a RISC-V Emulator in Rust](https://book.rvemu.app/index.html)*.
 - Huge thanks to [Andrew Kelly](https://andrewkelley.me/) for creating the Zig language.
