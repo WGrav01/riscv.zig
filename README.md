@@ -56,6 +56,7 @@ Coming soon, once I have an actual implementation of the library.
 | RV128 support   | Planned                  |
 | ISA extensions  | Status table coming soon |
 | JIT compilation | Planned                  |
+| libvirt         | Possibly? Stretch goal   |
 | GDB server      | Likely, not sure yet     |
 | Assembler       | Possibly? Stretch goal   |
 | Disassembler    | Possibly? Stretch goal   |
