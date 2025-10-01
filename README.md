@@ -1,6 +1,8 @@
 # riscv.zig
 
 ### A fast-ish interpreted RISC-V emulator, in pure Zig.
+![GitHub License](https://img.shields.io/github/license/WGrav01/riscv.zig) ![GitHub top language](https://img.shields.io/github/languages/top/WGrav01/riscv.zig?logo=zig&color=%23f6a51d)
+
 
 ## About:
 <p>riscv.zig is a work in progress RISC-V emulator, soon-to-be available as both a library that can be implemented in other projects and as a standalone application. The goal is to be as flexible as reasonably possible, supporting most (if not all) major ISA extensions. It also aims to be performant, at least for an interpreted emulator. (I plan to implement JIT compilation using GNU Lightning, and maybe even KVM later on.)<p>
