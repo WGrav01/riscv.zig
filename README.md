@@ -24,12 +24,6 @@ zig build
 # To run tests:
 zig test
 
-# To build documentation (will output to ./docs)
-zig build-lib -femit-docs -fno-emit-bin lib/root.zig
-
-# To view the generated documentation (view it at http://0.0.0.0:8080/)
-cd ./docs && python -m http.server
-
 # To run the exe:
 ./zig-out/bin/riscv_zig
 ```
@@ -51,6 +45,17 @@ cd ./docs && python -m http.server
     const riscv = @import("riscv");
     ```
 4) Profit
+
+## Documentation
+You can run the following to build the documentation to ./docs:
+```bash
+zig build-lib -femit-docs -fno-emit-bin lib/root.zig
+```
+Then, in the docs directory, run `python -m http.server` to host the documentation at 0.0.0.0:8080.
+The official documentation as well is available on [Github Pages](https://wgrav01.github.io/riscv.zig/).
+
+> [!NOTE]
+> There is also a DeepWiki available [here](https://deepwiki.com/WGrav01/riscv.zig), but keep in mind it is entirely AI generated. I have no control over the contents of the wiki. While it can be useful, ultimately the Github Pages site and this Readme is the authoritative documentation for this project.
 
 ## Usage:
 Coming soon, once I have an actual implementation of the library.
