@@ -3,19 +3,26 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const mod = b.addModule("riscv_zig", .{
+    const mod = b.addModule("riscv", .{
         .root_source_file = b.path("lib/root.zig"),
         .target = target,
     });
 
+    const lib = b.addLibrary(.{
+        .name = "riscv",
+        .root_module = mod,
+    });
+
+    b.installArtifact(lib);
+
     const exe = b.addExecutable(.{
-        .name = "riscv_zig",
+        .name = "riscv",
         .root_module = b.createModule(.{
             .root_source_file = b.path("exe/main.zig"),
             .target = target,
             .optimize = optimize,
             .imports = &.{
-                .{ .name = "riscv_zig", .module = mod },
+                .{ .name = "riscv", .module = mod },
             },
         }),
     });
