@@ -31,12 +31,12 @@ jobs:
 
       - name: Generate Documentation
         run: |
-          zig build-lib -femit-docs -fno-emit-bin lib/root.zig
+          zig build docs -Dno-emit-bin=true
           
       - name: Upload Documentation
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './docs'
+          path: './zig-out/docs'
 
   deploy:
     environment:
