@@ -24,6 +24,12 @@ zig build
 # To run tests:
 zig test
 
+# To build documentation (will output to ./docs)
+zig build-lib -femit-docs -fno-emit-bin lib/root.zig
+
+# To view the generated documentation (view it at http://0.0.0.0:8080/)
+cd ./docs && python -m http.server
+
 # To run the exe:
 ./zig-out/bin/riscv_zig
 ```
