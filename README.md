@@ -47,7 +47,7 @@ zig test
 4) Profit
 
 ## Documentation
-You can run the following to build the documentation to ./docs:
+You can run the following to build the documentation to `zig-out/docs/`:
 ```bash
 zig build docs
 ```
