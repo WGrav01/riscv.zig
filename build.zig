@@ -50,19 +50,41 @@ pub fn build(b: *std.Build) void {
         run_cmd.addArgs(args);
     }
 
-    const mod_tests = b.addTest(.{
-        .root_module = mod,
+    const test_filter = b.option([]const []const u8, "test-filter", "Filter to specific tests") orelse &[_][]const u8{};
+
+    const lib_test_mod = b.addModule("lib_tests", .{
+        .root_source_file = b.path("lib/tests/root.zig"),
+        .optimize = optimize,
+        .target = target,
+        .imports = &.{
+            .{ .name = "riscv", .module = mod },
+        },
     });
 
-    const run_mod_tests = b.addRunArtifact(mod_tests);
+    const tests = b.addTest(.{
+        .root_module = lib_test_mod,
+        .filters = test_filter,
+    });
+
+    const run_lib_tests = b.addRunArtifact(tests);
+
+    const exe_test_mod = b.addModule("exe_tests", .{
+        .root_source_file = b.path("exe/tests/root.zig"),
+        .optimize = optimize,
+        .target = target,
+        .imports = &.{
+            .{ .name = "riscv", .module = mod },
+        },
+    });
 
     const exe_tests = b.addTest(.{
-        .root_module = exe.root_module,
+        .root_module = exe_test_mod,
+        .filters = test_filter,
     });
 
     const run_exe_tests = b.addRunArtifact(exe_tests);
 
     const test_step = b.step("test", "Run tests");
-    test_step.dependOn(&run_mod_tests.step);
+    test_step.dependOn(&run_lib_tests.step);
     test_step.dependOn(&run_exe_tests.step);
 }
