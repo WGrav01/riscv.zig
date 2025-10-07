@@ -21,5 +21,7 @@ const Rv32 = struct {
 
         cpu.registers[0] = 0x00; // Register x0 is hardwired to zero
         cpu.registers[2] = d.base + d.size; // Set the stack pointer
+
+        return cpu;
     }
 };
