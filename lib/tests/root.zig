@@ -1,1 +1,3 @@
-const dram = @import("dram.zig");
+const std = @import("std");
+pub const riscv = @import("riscv");
+pub const dram = @import("dram.zig");

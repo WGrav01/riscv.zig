@@ -50,7 +50,7 @@ pub fn build(b: *std.Build) void {
         run_cmd.addArgs(args);
     }
 
-    const test_filter = b.option([]const []const u8, "test-filter", "Filter to specific tests") orelse &[_][]const u8{};
+    const test_filter = b.option([]const []const u8, "test-filter", "Skip tests that don't match the specified filters") orelse &.{};
 
     const lib_test_mod = b.addModule("lib_tests", .{
         .root_source_file = b.path("lib/tests/root.zig"),
