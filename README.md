@@ -49,10 +49,11 @@ zig test
 ## Documentation
 You can run the following to build the documentation to ./docs:
 ```bash
-zig build-lib -femit-docs -fno-emit-bin lib/root.zig
+zig build docs
 ```
-Then, in the docs directory, run `python -m http.server` to host the documentation at 0.0.0.0:8080.
-The official documentation as well is available on [Github Pages](https://wgrav01.github.io/riscv.zig/).
+Additionally, you can append `-Dno-emit-bin` to prevent the Zig compiler from outputting a binary along with the docs.
+Then, in `zig-out/docs/`, run `python -m http.server` to host the documentation at 0.0.0.0:8080.
+The official documentation as well is available on [Github Pages](https://wgrav01.github.io/riscv.zig/), and is regenerated (for now) every commit. I plan to make it nightly, with snapshots of every tag as well.
 
 > [!NOTE]
 > There is also a DeepWiki available [here](https://deepwiki.com/WGrav01/riscv.zig), but keep in mind it is entirely AI generated. I have no control over the contents of the wiki. While it can be useful, ultimately the Github Pages site and this Readme is the authoritative documentation for this project.
