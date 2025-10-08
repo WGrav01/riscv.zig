@@ -10,7 +10,7 @@
 > [!WARNING]
 > riscv.zig is currently in heavy development, and is not in a usable state whatsoever. It probably can't even compile yet. As such, until I can get it into a usable state, all pushes and commits will be put into the main branch.
 
-## Installation: 
+## Installation:
 The project tracks the latest stable releases of Zig, currently at 0.15.1. You will need the relevant version to use, and I strongly recommend you use [anyzig](https://github.com/marler8997/anyzig) to help with that. To clone and compile:
 ```bash
 # You can also use ssh if you want:
@@ -28,7 +28,7 @@ zig test
 ./zig-out/bin/riscv_zig
 ```
 ### How to add the library to an existing project
-1) Run `zig fetch --save https://github.com/WGrav01/riscv.zig.git`. You should then see the library in your `build.zig.zon`.
+1) Run `zig fetch --save git+https://github.com/WGrav01/riscv.zig.git`. You should then see the library in your `build.zig.zon`.
 2) Add to your `build.zig`:
     ```zig
     const riscv = b.dependency("riscv_zig", .{
@@ -40,7 +40,7 @@ zig test
     ```zig
     exe.root_module.addImport("riscv", riscv.module("riscv"));
     ```
-3) Now, you can use the library in your project 
+3) Now, you can use the library in your project
     ```zig
     const riscv = @import("riscv");
     ```
