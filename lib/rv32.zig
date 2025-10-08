@@ -25,3 +25,4 @@ const Rv32 = struct {
         return cpu;
     }
 };
+
