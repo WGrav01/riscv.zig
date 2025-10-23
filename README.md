@@ -18,7 +18,7 @@ git clone https://github.com/WGrav01/riscv.zig.git
 
 cd riscv.zig
 
-# To compile the library and executable (the exe is not implemented yet!):
+# To compile the library and app (the app is not implemented yet!):
 zig build
 
 # To run tests:
