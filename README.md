@@ -76,19 +76,7 @@ Coming soon, once I have an actual implementation of the library.
 | Disassembler    | Possibly? Stretch goal   |
 
 ## Contributing:
-PRs and help is welcome! Please open an issue however before any major contributions however.
-
-### And of course, many thanks for our contributors!
-<!--GAMFC--><table><tr>
-  <td align="center">
-    <a href="https://github.com/WGrav01" title="WGrav">
-      <img src="https://avatars.githubusercontent.com/u/63617338?v=4" width="100;" alt="WGrav"/>
-    <br /><sub><b>WGrav</b></sub>
-    </a>
-  </td>
-</tr></table><!--GAMFC-END-->
-
-Contributor table made with [jaywcjlove/contributors](https://github.com/jaywcjlove/github-action-contributors).
+PRs and help is welcome! Please open an issue however before any major contributions however, so that I can evaluate your proposed change and not waste your time.
 
 ## Support:
 I will be happy to help you. However, please do not open an issue unless you are confident that your problem is an enhancement, bug, or something to change. Use discussions instead.
@@ -101,3 +89,15 @@ This project is licensed under the [MIT License](https://opensource.org/license/
 - A lot of info used from [fmash16's project](https://fmash16.github.io/content/posts/riscv-emulator-in-c.html).
 - As well as from *[Writing a RISC-V Emulator in Rust](https://book.rvemu.app/index.html)*.
 - Huge thanks to [Andrew Kelly](https://andrewkelley.me/) for creating the Zig language.
+
+### And of course, many thanks for our contributors!
+<!--GAMFC--><table><tr>
+  <td align="center">
+    <a href="https://github.com/WGrav01" title="WGrav">
+      <img src="https://avatars.githubusercontent.com/u/63617338?v=4" width="100;" alt="WGrav"/>
+    <br /><sub><b>WGrav</b></sub>
+    </a>
+  </td>
+</tr></table><!--GAMFC-END-->
+
+Contributor table made with [jaywcjlove/contributors](https://github.com/jaywcjlove/github-action-contributors).
