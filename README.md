@@ -77,6 +77,7 @@ Coming soon, once I have an actual implementation of the library.
 
 ## Contributing:
 PRs and help is welcome! Please open an issue however before any major contributions however, so that I can evaluate your proposed change and not waste your time.
+In addittion, any PR that does not use [Conventional Comments](https://www.conventionalcommits.org/en/v1.0.0/) will be rejected.
 
 ## Support:
 I will be happy to help you. However, please do not open an issue unless you are confident that your problem is an enhancement, bug, or something to change. Use discussions instead.
