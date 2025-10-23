@@ -7,7 +7,7 @@ pub fn build(b: *std.Build) void {
 
     const lib = b.addLibrary(.{
         .name = "riscv",
-        .root_module = b.addModules("riscv", .{
+        .root_module = b.addModule("riscv", .{
             .root_source_file = b.path("lib/root.zig"),
             .target = target,
             .optimize = optimize,
