@@ -78,6 +78,13 @@ Coming soon, once I have an actual implementation of the library.
 ## Contributing:
 PRs and help is welcome! Please open an issue however before any major contributions however.
 
+### And of course, many thanks for our contributors!
+<a href="https://github.com/WGrav01/riscv.zig/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=WGrav01/riscv.zig" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
+
 ## Support:
 I will be happy to help you. However, please do not open an issue unless you are confident that your problem is an enhancement, bug, or something to change. Use discussions instead.
 
