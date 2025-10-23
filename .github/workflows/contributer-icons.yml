@@ -2,7 +2,7 @@ name: Generate contributor icons
 
 on: 
   schedule:
-    - chron: '0 12 * * *'
+    - cron: '0 12 * * *'
 
   workflow_dispatch:
 
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   generate-contributor-icons:
+    runs-on: ubuntu-latest
     - name: Generate Contributors Images
       uses: jaywcjlove/github-action-contributors@main
       id: contributors
