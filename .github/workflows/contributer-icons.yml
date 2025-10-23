@@ -1,0 +1,29 @@
+name: Generate contributor icons
+
+on: 
+  schedule:
+    - chron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  generate-contributor-icons:
+    - name: Generate Contributors Images
+      uses: jaywcjlove/github-action-contributors@main
+      id: contributors
+      with:
+        filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
+    
+        openDelimiter: '<!--GAMFC_DELIMITER-->'
+        closeDelimiter: '<!--GAMFC_DELIMITER-END-->'
+        hideName: 'false'
+        avatarSize: 100
+    - name: Modify htmlTable README.md
+      uses: jaywcjlove/github-action-modify-file-content@main
+      with:
+        path: README.md
+        body: '${{steps.contributors.outputs.htmlTable}}'
