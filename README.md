@@ -90,7 +90,7 @@ This project is licensed under the [MIT License](https://opensource.org/license/
 - As well as from *[Writing a RISC-V Emulator in Rust](https://book.rvemu.app/index.html)*.
 - Huge thanks to [Andrew Kelly](https://andrewkelley.me/) for creating the Zig language.
 
-### And of course, many thanks for our contributors!
+### And many thanks to the contributors!
 <!--GAMFC--><table><tr>
   <td align="center">
     <a href="https://github.com/WGrav01" title="WGrav">
