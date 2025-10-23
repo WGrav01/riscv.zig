@@ -88,7 +88,7 @@ PRs and help is welcome! Please open an issue however before any major contribut
   </td>
 </tr></table><!--GAMFC-END-->
 
-Contributor table made with [contributors](https://github.com/jaywcjlove/github-action-contributors).
+Contributor table made with [jaywcjlove/contributors](https://github.com/jaywcjlove/github-action-contributors).
 
 ## Support:
 I will be happy to help you. However, please do not open an issue unless you are confident that your problem is an enhancement, bug, or something to change. Use discussions instead.
