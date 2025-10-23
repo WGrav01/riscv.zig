@@ -79,7 +79,7 @@ Coming soon, once I have an actual implementation of the library.
 PRs and help is welcome! Please open an issue however before any major contributions however.
 
 ### And of course, many thanks for our contributors!
-<!--GAMFC_DELIMITER-->placeholder for contributer icons<!--GAMFC_DELIMITER-END-->
+<!--GAMFC--> placeholder for contributor icons <!--GAMFC-END-->
 
 Made with [contributors](https://github.com/jaywcjlove/github-action-contributors).
 
