@@ -79,7 +79,14 @@ Coming soon, once I have an actual implementation of the library.
 PRs and help is welcome! Please open an issue however before any major contributions however.
 
 ### And of course, many thanks for our contributors!
-<!--GAMFC--> placeholder for contributor icons <!--GAMFC-END-->
+<!--GAMFC--><table><tr>
+  <td align="center">
+    <a href="https://github.com/WGrav01" title="WGrav">
+      <img src="https://avatars.githubusercontent.com/u/63617338?v=4" width="100;" alt="WGrav"/>
+    <br /><sub><b>WGrav</b></sub>
+    </a>
+  </td>
+</tr></table><!--GAMFC-END-->
 
 Made with [contributors](https://github.com/jaywcjlove/github-action-contributors).
 
