@@ -67,7 +67,7 @@ pub const Extensions = enum {
 };
 
 /// Helper enum for the RISC-V instruction types. They are designated by their 7 bit opcode. (bits 0 to 6 in an instruction)
-const InstructionFormat = enum(u7) {
+pub const InstructionFormat = enum(u7) {
     R = 0b0110011,
     I = 0b0010011,
     S = 0b0100011,
@@ -77,7 +77,7 @@ const InstructionFormat = enum(u7) {
 };
 
 /// Enum for RV32 operations. (opcodes/instructions) Currently only base integer instructions are left in here.
-const RV32Operation = enum {
+pub const RV32Operation = enum {
     /// Add:
     /// rd = rs1 + rs2
     add,
