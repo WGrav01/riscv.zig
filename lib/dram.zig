@@ -49,7 +49,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 2 > self.size) return DRAMError.OutOfBounds;
-        const src = @as(*[2]u8, @ptrCast(&self.mem[idx]));
+        const src: *[2]u8 = @ptrCast(&self.mem[idx]);
         return std.mem.readInt(u16, src, .little);
     }
 
@@ -58,7 +58,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 4 > self.size) return DRAMError.OutOfBounds;
-        const src = @as(*[4]u8, @ptrCast(&self.mem[idx]));
+        const src: *[4]u8 = @ptrCast(&self.mem[idx]);
         return std.mem.readInt(u32, src, .little);
     }
 
@@ -67,7 +67,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 8 > self.size) return DRAMError.OutOfBounds;
-        const src = @as(*[8]u8, @ptrCast(&self.mem[idx]));
+        const src: *[8]u8 = @ptrCast(&self.mem[idx]);
         return std.mem.readInt(u64, src, .little);
     }
 
@@ -76,7 +76,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 16 > self.size) return DRAMError.OutOfBounds;
-        const src = @as(*[16]u8, @ptrCast(&self.mem[idx]));
+        const src: *[16]u8 = @ptrCast(&self.mem[idx]);
         return std.mem.readInt(u128, src, .little);
     }
 
@@ -93,7 +93,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 2 > self.size) return DRAMError.OutOfBounds;
-        const dst = @as(*[2]u8, @ptrCast(&self.mem[idx]));
+        const dst: *[2]u8 = @ptrCast(&self.mem[idx]);
         std.mem.writeInt(u16, dst, value, .little);
     }
 
@@ -102,7 +102,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 4 > self.size) return DRAMError.OutOfBounds;
-        const dst = @as(*[4]u8, @ptrCast(&self.mem[idx]));
+        const dst: *[4]u8 = @ptrCast(&self.mem[idx]);
         std.mem.writeInt(u32, dst, value, .little);
     }
 
@@ -111,7 +111,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 8 > self.size) return DRAMError.OutOfBounds;
-        const dst = @as(*[8]u8, @ptrCast(&self.mem[idx]));
+        const dst: *[8]u8 = @ptrCast(&self.mem[idx]);
         std.mem.writeInt(u64, dst, value, .little);
     }
 
@@ -120,9 +120,7 @@ pub const DRAM = struct {
         if (addr < self.base) return DRAMError.OutOfBounds;
         const idx = addr - self.base;
         if (idx + 16 > self.size) return DRAMError.OutOfBounds;
-        const dst = @as(*[16]u8, @ptrCast(&self.mem[idx]));
+        const dst: *[16]u8 = @ptrCast(&self.mem[idx]);
         std.mem.writeInt(u128, dst, value, .little);
     }
 };
-
-// Tests begin here:
