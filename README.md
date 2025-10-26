@@ -56,7 +56,9 @@ Then, in `zig-out/docs/`, run `python -m http.server` to host the documentation 
 The official documentation as well is available on [Github Pages](https://wgrav01.github.io/riscv.zig/), and is generated every midnight. (at UTC time) I plan to implement snapshots for every tag as well.
 
 > [!NOTE]
-> There is also a DeepWiki available [here](https://deepwiki.com/WGrav01/riscv.zig), but keep in mind it is entirely AI generated. I have no control over the contents of the wiki. While it can be useful, ultimately the Github Pages site and this Readme is the authoritative documentation for this project.
+> There is also a DeepWiki available, but keep in mind it is entirely AI generated. I have no control over the contents of the wiki. While it can be useful, ultimately the Github Pages site and this Readme is the authoritative documentation for this project.
+> 
+> [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/WGrav01/riscv.zig)
 
 ## Usage:
 Coming soon, once I have an actual implementation of the library.
