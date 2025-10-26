@@ -1,0 +1,21 @@
+{
+    "rules": {
+        "allocator-first-param": "warn",
+        "avoid-as": "warn",
+        "case-convention": "warn",
+        "duplicate-case": "warn",
+        "empty-file": "warn",
+        "homeless-try": "error",
+        "line-length": "warn",
+        "must-return-ref": "warn",
+        "no-catch-return": "warn",
+        "no-print": "warn",
+        "no-return-try": "warn",
+        "no-unresolved": "error",
+        "returned-stack-reference": "warn",
+        "suppressed-errors": "warn",
+        "unsafe-undefined": "warn",
+        "unused-decls": "warn",
+        "useless-error-return": "warn"
+    }
+}
