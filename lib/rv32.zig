@@ -14,15 +14,14 @@ const Rv32 = struct {
 
     pub fn init(d: dram) Rv32 {
         const cpu = Rv32{
-            .registers = std.mem.zeroes([32]u32),
+            .registers = std.mem.zeroes([32]u32), // Initialize the registers with zeroes, they will be individually initialized later
             .pc = d.base, // Set program counter to DRAM base
             .dram = d,
         };
 
-        cpu.registers[0] = 0x00; // Register x0 is hardwired to zero
+        cpu.registers[0] = 0x00; // Register x0 is hardwired to zero and should ignore any writes to it
         cpu.registers[2] = d.base + d.size; // Set the stack pointer
 
         return cpu;
     }
 };
-
