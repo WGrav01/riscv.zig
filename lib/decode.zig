@@ -296,7 +296,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for a R type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionR(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        try std.log.debug("Validated and appending instruction {} of opcode {} from address {}. i = {}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
@@ -315,7 +315,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for an I type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionI(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        try std.log.debug("Validated and appending instruction {} of opcode {} from address {}. i = {}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
@@ -334,7 +334,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for a S type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionS(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        try std.log.debug("Validated and appending instruction {} of opcode {} from address {}. i = {}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
@@ -353,7 +353,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for a B type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionB(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        try std.log.debug("Validated and appending instruction {} of opcode {} from address {}. i = {}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
@@ -372,7 +372,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for an U type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionU(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        try std.log.debug("Validated and appending instruction {} of opcode {} from address {}. i = {}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
@@ -391,7 +391,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for a J type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionJ(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        try std.log.debug("Validated and appending instruction {} of opcode {} from address {}. i = {}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
