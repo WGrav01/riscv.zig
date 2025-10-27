@@ -11,7 +11,7 @@
 > riscv.zig is currently in heavy development, and is not in a usable state whatsoever. It probably can't even compile yet. As such, until I can get it into a usable state, all pushes and commits will be put into the main branch.
 
 ## Installation:
-The project tracks the latest stable releases of Zig, currently at 0.15.1. You will need the relevant version to use, and I strongly recommend you use [anyzig](https://github.com/marler8997/anyzig) to help with that. To clone and compile:
+The project tracks the latest stable releases of Zig, currently at `0.15.2`. You will need the relevant version to use, and I strongly recommend you use [anyzig](https://github.com/marler8997/anyzig) to help with that. To clone and compile:
 ```bash
 # You can also use ssh if you want:
 git clone https://github.com/WGrav01/riscv.zig.git
