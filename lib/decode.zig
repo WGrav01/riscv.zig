@@ -158,6 +158,7 @@ pub const Instructions = struct {
     /// J-type: imm[20|10:1|11|19:12]
     imm_j: ArrayList(?i32),
 
+    /// Returns an empty instruction SoA with initialized (empty) ArrayList values
     pub fn init() Instructions {
         return Instructions{
             .loc = ArrayList(usize).empty,
@@ -172,6 +173,21 @@ pub const Instructions = struct {
             .imm_u = ArrayList(?i32).empty,
             .imm_j = ArrayList(?i32).empty,
         };
+    }
+
+    /// Deallocate the ArrayLists in the struct
+    pub fn deinit(self: *Instructions, allocator: Allocator) void {
+        self.loc.deinit(allocator);
+        self.op.deinit(allocator);
+        self.rd.deinit(allocator);
+        self.rs1.deinit(allocator);
+        self.rs2.deinit(allocator);
+        self.funct7.deinit(allocator);
+        self.imm_i.deinit(allocator);
+        self.imm_s.deinit(allocator);
+        self.imm_b.deinit(allocator);
+        self.imm_u.deinit(allocator);
+        self.imm_j.deinit(allocator);
     }
 
     pub fn validateAndPack(self: *Instructions, allocator: Allocator, comptime len: usize, instructions: Decoder(len)) !void {
