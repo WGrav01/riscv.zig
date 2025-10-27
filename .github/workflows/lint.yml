@@ -19,18 +19,25 @@ jobs:
           version: 0.14.1
 
       - name: Cache zlint
+        id: cache-zlint
         uses: actions/cache@v3
         with:
-          path: /tmp/zlint/zig-out
-          key: ${{ runner.os }}-zlint-${{ hashFiles('/tmp/zlint/**') }}
+          path: /tmp/zlint/zig-out/bin/zlint
+          key: ${{ runner.os }}-zlint-v1
+        restore-keys: |
+          ${{ runner.os }}-zlint-
 
-      - name: Install zlint
+      - name: Build zlint
         if: steps.cache-zlint.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/DonIsaac/zlint.git /tmp/zlint
           cd /tmp/zlint
           zig build --release=safe
-          sudo cp zig-out/bin/zlint /usr/local/bin/
+
+      - name: Install zlint
+        run: |
+          sudo cp /tmp/zlint/zig-out/bin/zlint /usr/bin/zlint
+          sudo chmod +x /usr/bin/zlint
 
       - name: Setup Zig for project
         uses: mlugg/setup-zig@v2
@@ -41,10 +48,10 @@ jobs:
         run: |
           zlint | tee zlint_output.txt
           cat zlint_output.txt
-          warning_count=$(grep -c '⚠' zlint_output.txt)
-          error_count=$(grep -c '𝙭' zlint_output.txt)
+          warning_count=$(grep -c '⚠' zlint_output.txt || true)
+          error_count=$(grep -c '𝙭' zlint_output.txt || true)
           echo "${warning_count} warnings detected, ${error_count} errors detected"
           rm zlint_output.txt
           if [[ "$warning_count" -gt "0" ]] || [[ "$error_count" -gt "0" ]]; then
-              exit 1
+            exit 1
           fi
