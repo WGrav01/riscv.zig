@@ -46,11 +46,17 @@ jobs:
 
       - name: Run zlint
         run: |
-          zlint | tee zlint_output.txt
+          zlint > zlint_output.txt
+          
           warning_count=$(grep -c '⚠' zlint_output.txt || true)
           error_count=$(grep -c '𝙭' zlint_output.txt || true)
-          echo "${warning_count} warnings detected, ${error_count} errors detected"
+
+          sed 's/⚠/::warning::/g' zlint_output.txt > /dev/null
+          sed 's/𝙭/::error::/g' zlint_output.txt > /dev/null
+
+          cat zlint_output.txt
           rm zlint_output.txt
-          if [[ "$warning_count" -gt "0" ]] || [[ "$error_count" -gt "0" ]]; then
+
+          if [[ "$warning_count" -gt "0" ]] || [[ "$error_count" -gt 0 ]]; then
             exit 1
           fi
