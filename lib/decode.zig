@@ -175,27 +175,27 @@ pub const Instructions = struct {
                             switch (instructions.funct7[i]) {
                                 0x00 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.add),
                                 0x20 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sub),
-                                else => std.log.debug("Skipping instruction {} (i = {}) due to having valid R-type opcode, funct3 of {}, but an invalid funct7 of {}.", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] }),
+                                else => std.log.debug("Skipping instruction {} (i = {}) due to having valid R-type opcode, funct3 of {}, but an invalid funct7 of {}.\n", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] }),
                             }
                         },
                         0x1 => {
                             if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, instructions, isa.RV32Operation.sll) else {
-                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
+                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.\n", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
                             }
                         },
                         0x2 => {
                             if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.slt) else {
-                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
+                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.\n", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
                             }
                         },
                         0x3 => {
                             if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sltu) else {
-                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
+                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.\n", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
                             }
                         },
                         0x4 => {
                             if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.xor) else {
-                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
+                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.\n", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
                             }
                         },
                         0x5 => {
@@ -211,7 +211,7 @@ pub const Instructions = struct {
                         0x7 => {
                             if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.AND);
                         },
-                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] }),
+                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] }),
                     }
                 },
                 0b0010011 => { // I type instruction
@@ -220,7 +220,7 @@ pub const Instructions = struct {
                         0x1 => {
                             const shamt_high: u7 = @truncate((instructions.imm_i[i] >> 5) & 0x7f);
                             if (shamt_high == 0x00) try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.slli) else {
-                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode but invalid shamt_high of 0x{X}", .{ instructions.instruction[i], i, shamt_high });
+                                std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode but invalid shamt_high of 0x{X}\n", .{ instructions.instruction[i], i, shamt_high });
                             }
                         },
                         0x2 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.slti),
@@ -231,12 +231,12 @@ pub const Instructions = struct {
                             switch (shamt_high) {
                                 0x00 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.srli),
                                 0x20 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.srai),
-                                else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode but invalid shamt_high of 0x{X}", .{ instructions.instruction[i], i, shamt_high }),
+                                else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode but invalid shamt_high of 0x{X}\n", .{ instructions.instruction[i], i, shamt_high }),
                             }
                         },
                         0x6 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ori),
                         0x7 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.andi),
-                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid I-type opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] }),
+                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid I-type opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] }),
                     }
                 },
                 0b0000011 => { // I type instruction (load)
@@ -246,7 +246,7 @@ pub const Instructions = struct {
                         0x2 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lw),
                         0x4 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lbu),
                         0x5 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lhu),
-                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid load (I type) opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] }),
+                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid load (I type) opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] }),
                     }
                 },
                 0b0100011 => { // S type instruction
@@ -254,7 +254,7 @@ pub const Instructions = struct {
                         0x0 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sb),
                         0x1 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sh),
                         0x2 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sw),
-                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid S type opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] }),
+                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid S type opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] }),
                     }
                 },
                 0b1100011 => { // B type instruction
@@ -265,18 +265,18 @@ pub const Instructions = struct {
                         0x5 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bge),
                         0x6 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bltu),
                         0x7 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bgeu),
-                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid B type opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] }),
+                        else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid B type opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] }),
                     }
                 },
                 0b1100111 => {
                     if (instructions.funct3[i] == 0x0) {
                         try self.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jal);
-                    } else std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid jal opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] });
+                    } else std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid jal opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] });
                 },
                 0b1101111 => {
                     if (instructions.funct3[i] == 0x0) {
                         try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jal);
-                    } else std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid jalr opcode but invalid funct3 of 0x{X}", .{ instructions.instruction[i], i, instructions.funct3[i] });
+                    } else std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid jalr opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] });
                 },
                 0b0110111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.lui),
                 0b0010111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.auipc),
@@ -285,7 +285,7 @@ pub const Instructions = struct {
                         switch (instructions.imm_i[i]) {
                             0x0 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ecall),
                             0x1 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ebreak),
-                            else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid ecall/ebreak opcode but invalid imm of 0x{X}", .{ instructions.instruction[i], i, instructions.imm_i[i] }),
+                            else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid ecall/ebreak opcode but invalid imm of 0x{X}\n", .{ instructions.instruction[i], i, instructions.imm_i[i] }),
                         }
                     }
                 },
@@ -391,7 +391,7 @@ pub const Instructions = struct {
 
     /// Appends the relevant fields for a J type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
     inline fn appendInstructionJ(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
-        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
+        std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
