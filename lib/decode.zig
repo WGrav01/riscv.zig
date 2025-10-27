@@ -1,3 +1,9 @@
+/// Errors returned by an invalid usage of the decoding stages
+pub const DecodeError = error{
+    /// The decoder was set to an invalid alignment
+    MisalignedMemoryAccess
+};
+
 /// Struct that holds a batch of instructions in vector form for the first stage of decoding.
 /// The decode function is ran at comptime as the vectors' length needs to be known then, and unless the instructions are comptime known, the instructions will be decoded at runtime by calling the decode function.
 pub fn Decoder(comptime len: usize, base: usize) type {
@@ -43,7 +49,9 @@ pub fn Decoder(comptime len: usize, base: usize) type {
 
         /// Decode a batch of instructions, extracting every field for every instruction, using SIMD for parallelization.
         /// While the every field decoding is redundant, it reduces control flow which is more ideal for stage 2. (in theory)
-        pub inline fn decode(self: *@This(), instructions: @Vector(len, u32)) void {
+        pub inline fn decode(self: *@This(), instructions: @Vector(len, u32)) !void {
+            if (self.base % 4 != 0) return DecodeError.MisalignedMemoryAccess;
+
             self.instructions = instructions;
 
             // Masks needed for common field bit extraction, splatted into a vector. 2^[# of bits] - 1
