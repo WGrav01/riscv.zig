@@ -174,29 +174,29 @@ pub const Instructions = struct {
                             }
                         },
                         0x1 => {
-                            if (instructions.common.funct7 == 0x0) try self.appendInstructionR(allocator, len, instructions, isa.RV32Operation.sll);
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, instructions, isa.RV32Operation.sll);
                         },
                         0x2 => {
-                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.slt);
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.slt);
                         },
                         0x3 => {
-                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sltu);
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sltu);
                         },
                         0x4 => {
-                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.xor);
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.xor);
                         },
                         0x5 => {
-                            switch (instructions) {
+                            switch (instructions.funct7[i]) {
                                 0x00 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.srl),
                                 0x20 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sra),
                                 else => continue,
                             }
                         },
                         0x6 => {
-                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.OR);
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.OR);
                         },
                         0x7 => {
-                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.AND);
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.AND);
                         },
                         else => continue,
                     }
@@ -238,7 +238,7 @@ pub const Instructions = struct {
                     switch (instructions.funct3[i]) {
                         0x0 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sb),
                         0x1 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sh),
-                        0x1 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sw),
+                        0x2 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sw),
                         else => continue,
                     }
                 },
@@ -253,18 +253,13 @@ pub const Instructions = struct {
                         else => continue,
                     }
                 },
-                0b1101111 => { // Jump instructions (J and I)
-                    if (instructions.funct3[i] == 0x0) {
-                        try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jal);
-                    } else {
-                        try self.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jalr);
-                    }
-                },
+                0b1101111 => if (instructions.funct3[i] == 0x0) try self.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jal),
+                0b1100111 => if (instructions.funct3[i] == 0x0) try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jalr),
                 0b0110111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.lui),
                 0b0010111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.auipc),
                 0b1110011 => { // ecall and ebreak
                     if (instructions.funct3[i] == 0x0) {
-                        switch (instructions.funct7[i]) {
+                        switch (instructions.imm_i[i]) {
                             0x0 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ecall),
                             0x1 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ebreak),
                             else => continue,
