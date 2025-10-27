@@ -112,147 +112,161 @@ const isa = @import("isa.zig");
 /// Only values actually needed during execution (parameters) are kept, otherwise things like the opcode, funct3 are left out and replaced with an enum.
 pub const Instructions = struct {
     /// The address (in DRAM) where instructions are stored
-    loc = ArrayList(usize).empty,
+    loc: ArrayList(usize),
 
     /// The operation name (opcode)
-    op = ArrayList(isa.RV32_Operation).empty,
+    op: ArrayList(isa.RV32_Operation),
 
     /// The destination register.
     /// This is present in all instruction types except for S and B, where it uses imm[4:0] and imm[4:1|11], likewise
-    rd = ArrayList(?u5).empty,
+    rd: ArrayList(?u5),
 
     /// The first source register for the instruction. Like funct3, it is present in all instruction types except for U and J.
-    rs1 = ArrayList(?u5).empty,
+    rs1: ArrayList(?u5),
 
     /// The second source register to be used in the instruction. Present in R, S, and B instruction types.
-    rs2 = ArrayList(?u5).empty,
+    rs2: ArrayList(?u5),
 
     /// A last 7 bits specifying additional execution details in an R type instruction.
-    funct7 = ArrayList(?u7).empty,
+    funct7: ArrayList(?u7),
 
     /// I-type immediate value: imm[11:0], replacing the rd field.
-    imm_i = ArrayList(?i32).empty, // All immediate fields are signed
+    imm_i: ArrayList(?i32), // All immediate fields are signed
 
     /// S-type: imm[11:5|4:0]
-    imm_s = ArrayList(?i32).empty,
+    imm_s: ArrayList(?i32),
 
     /// B-type: imm[12|10:5|4:1|11]
-    imm_b = ArrayList(?i32).empty,
+    imm_b: ArrayList(?i32),
 
     /// U-type: imm[31:12]
-    imm_u = ArrayList(?i32).empty,
+    imm_u: ArrayList(?i32),
 
     /// J-type: imm[20|10:1|11|19:12]
-    imm_j = ArrayList(?i32).empty,
+    imm_j: ArrayList(?i32),
 
-    pub fn validateAndPack(allocator: Allocator, comptime len: usize, instructions: Decoder(len)) !Instructions {
-        var result = Instructions{};
+    pub fn init() Instructions {
+        return Instructions{
+            .loc = ArrayList(usize).empty,
+            .op = ArrayList(isa.RV32Operation).empty,
+            .rd = ArrayList(?u5).empty,
+            .rs1 = ArrayList(?u5).empty,
+            .rs2 = ArrayList(?u5).empty,
+            .funct7 = ArrayList(?u5).empty,
+            .imm_i = ArrayList(?i32).empty,
+            .imm_s = ArrayList(?i32).empty,
+            .imm_b = ArrayList(?i32).empty,
+            .imm_u = ArrayList(?i32).empty,
+            .imm_j = ArrayList(?i32).empty,
+        };
+    }
 
+    pub fn validateAndPack(self: *Instructions, allocator: Allocator, comptime len: usize, instructions: Decoder(len)) !void {
         for (0..len) |i| {
             switch (instructions.opcode[i]) {
                 0b0110011 => { // R type instruction
                     switch (instructions.funct3[i]) {
                         0x0 => {
                             switch (instructions.funct7[i]) {
-                                0x00 => try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.add),
-                                0x20 => try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sub),
+                                0x00 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.add),
+                                0x20 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sub),
                                 else => continue,
                             }
                         },
                         0x1 => {
-                            if (instructions.common.funct7 == 0x0) try result.appendInstructionR(allocator, len, instructions, isa.RV32Operation.sll);
+                            if (instructions.common.funct7 == 0x0) try self.appendInstructionR(allocator, len, instructions, isa.RV32Operation.sll);
                         },
                         0x2 => {
-                            if (instructions.common.funct7[i] == 0x00) try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.slt);
+                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.slt);
                         },
                         0x3 => {
-                            if (instructions.common.funct7[i] == 0x00) try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sltu);
+                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sltu);
                         },
                         0x4 => {
-                            if (instructions.common.funct7[i] == 0x00) try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.xor);
+                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.xor);
                         },
                         0x5 => {
                             switch (instructions) {
-                                0x00 => try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.srl),
-                                0x20 => try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sra),
+                                0x00 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.srl),
+                                0x20 => try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sra),
                                 else => continue,
                             }
                         },
                         0x6 => {
-                            if (instructions.common.funct7[i] == 0x00) try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.OR);
+                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.OR);
                         },
                         0x7 => {
-                            if (instructions.common.funct7[i] == 0x00) try result.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.AND);
+                            if (instructions.common.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.AND);
                         },
                         else => continue,
                     }
                 },
                 0b0010011 => { // I type instruction
                     switch (instructions.funct3[i]) {
-                        0x0 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.addi),
+                        0x0 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.addi),
                         0x1 => {
                             const shamt_high: u7 = @truncate((instructions.imm_i[i] >> 5) & 0x7f);
-                            if (shamt_high == 0x00) try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.slli);
+                            if (shamt_high == 0x00) try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.slli);
                         },
-                        0x2 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.slti),
-                        0x3 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.sltiu),
-                        0x4 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.xori),
+                        0x2 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.slti),
+                        0x3 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.sltiu),
+                        0x4 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.xori),
                         0x5 => {
                             const shamt_high: u7 = @truncate((instructions.immediate.imm_i[i] >> 5) & 0x7f);
                             switch (shamt_high) {
-                                0x00 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.srli),
-                                0x20 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.srai),
+                                0x00 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.srli),
+                                0x20 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.srai),
                                 else => continue,
                             }
                         },
-                        0x6 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ori),
-                        0x7 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.andi),
+                        0x6 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ori),
+                        0x7 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.andi),
                         else => continue,
                     }
                 },
                 0b0000011 => { // I type instruction (load)
                     switch (instructions.funct3[i]) {
-                        0x0 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lb),
-                        0x1 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lh),
-                        0x2 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lw),
-                        0x4 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lbu),
-                        0x5 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lhu),
+                        0x0 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lb),
+                        0x1 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lh),
+                        0x2 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lw),
+                        0x4 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lbu),
+                        0x5 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.lhu),
                         else => continue,
                     }
                 },
                 0b0100011 => { // S type instruction
                     switch (instructions.funct3[i]) {
-                        0x0 => try result.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sb),
-                        0x1 => try result.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sh),
-                        0x1 => try result.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sw),
+                        0x0 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sb),
+                        0x1 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sh),
+                        0x1 => try self.appendInstructionS(allocator, len, i, instructions, isa.RV32Operation.sw),
                         else => continue,
                     }
                 },
                 0b1100011 => { // B type instruction
                     switch (instructions.funct3[i]) {
-                        0x0 => try result.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.beq),
-                        0x1 => try result.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bne),
-                        0x4 => try result.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.blt),
-                        0x5 => try result.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bge),
-                        0x6 => try result.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bltu),
-                        0x7 => try result.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bgeu),
+                        0x0 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.beq),
+                        0x1 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bne),
+                        0x4 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.blt),
+                        0x5 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bge),
+                        0x6 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bltu),
+                        0x7 => try self.appendInstructionB(allocator, len, i, instructions, isa.RV32Operation.bgeu),
                         else => continue,
                     }
                 },
                 0b1101111 => { // Jump instructions (J and I)
                     if (instructions.funct3[i] == 0x0) {
-                        try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jal);
+                        try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jal);
                     } else {
-                        try result.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jalr);
+                        try self.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jalr);
                     }
                 },
-                0b0110111 => try result.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.lui),
-                0b0010111 => try result.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.auipc),
+                0b0110111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.lui),
+                0b0010111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.auipc),
                 0b1110011 => { // ecall and ebreak
                     if (instructions.funct3[i] == 0x0) {
                         switch (instructions.funct7[i]) {
-                            0x0 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ecall),
-                            0x1 => try result.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ebreak),
+                            0x0 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ecall),
+                            0x1 => try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.ebreak),
                             else => continue,
                         }
                     }
@@ -272,8 +286,6 @@ pub const Instructions = struct {
         try self.rs1.append(allocator, instructions.rs1[i]);
         try self.rs2.append(allocator, instructions.rs2[i]);
 
-        try self.funct7.append(allocator, null);
-
         try self.imm_i.append(allocator, null);
         try self.imm_s.append(allocator, null);
         try self.imm_b.append(allocator, null);
@@ -282,7 +294,7 @@ pub const Instructions = struct {
     }
 
     /// Appends the relevant fields for an I type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
-    inline fn appendInstructionI(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(), opcode: isa.RV32Operation) !void {
+    inline fn appendInstructionI(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
         try self.rd.append(allocator, instructions.rd[i]);
@@ -290,8 +302,6 @@ pub const Instructions = struct {
         try self.rd.append(allocator, instructions.rd[i]);
         try self.rs1.append(allocator, instructions.rs1[i]);
         try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.funct7.append(allocator, null);
 
         try self.imm_i.append(allocator, instructions.imm_i[i]);
         try self.imm_s.append(allocator, null);
@@ -301,7 +311,7 @@ pub const Instructions = struct {
     }
 
     /// Appends the relevant fields for a S type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
-    inline fn appendInstructionS(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(), opcode: isa.RV32Operation) !void {
+    inline fn appendInstructionS(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
         try self.rd.append(allocator, instructions.rd[i]);
@@ -309,8 +319,6 @@ pub const Instructions = struct {
         try self.rd.append(allocator, instructions.rd[i]);
         try self.rs1.append(allocator, instructions.rs1[i]);
         try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.funct7.append(allocator, null);
 
         try self.imm_i.append(allocator, null);
         try self.imm_s.append(allocator, instructions.imm_s[i]);
@@ -320,7 +328,7 @@ pub const Instructions = struct {
     }
 
     /// Appends the relevant fields for a B type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
-    inline fn appendInstructionB(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(), opcode: isa.RV32Operation) !void {
+    inline fn appendInstructionB(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
         try self.rd.append(allocator, instructions.rd[i]);
@@ -328,8 +336,6 @@ pub const Instructions = struct {
         try self.rd.append(allocator, instructions.rd[i]);
         try self.rs1.append(allocator, instructions.rs1[i]);
         try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.funct7.append(allocator, null);
 
         try self.imm_i.append(allocator, null);
         try self.imm_s.append(allocator, null);
@@ -339,7 +345,7 @@ pub const Instructions = struct {
     }
 
     /// Appends the relevant fields for an U type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
-    inline fn appendInstructionU(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(), opcode: isa.RV32Operation) !void {
+    inline fn appendInstructionU(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
         try self.rd.append(allocator, instructions.rd[i]);
@@ -347,8 +353,6 @@ pub const Instructions = struct {
         try self.rd.append(allocator, instructions.rd[i]);
         try self.rs1.append(allocator, instructions.rs1[i]);
         try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.funct7.append(allocator, null);
 
         try self.imm_i.append(allocator, null);
         try self.imm_s.append(allocator, null);
@@ -358,7 +362,7 @@ pub const Instructions = struct {
     }
 
     /// Appends the relevant fields for a J type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
-    inline fn appendInstructionJ(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(), opcode: isa.RV32Operation) !void {
+    inline fn appendInstructionJ(self: *Instructions, allocator: Allocator, comptime len: usize, i: usize, instructions: Decoder(len), opcode: isa.RV32Operation) !void {
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
         try self.rd.append(allocator, instructions.rd[i]);
@@ -366,8 +370,6 @@ pub const Instructions = struct {
         try self.rd.append(allocator, instructions.rd[i]);
         try self.rs1.append(allocator, instructions.rs1[i]);
         try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.funct7.append(allocator, null);
 
         try self.imm_i.append(allocator, null);
         try self.imm_s.append(allocator, null);
