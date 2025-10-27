@@ -180,14 +180,6 @@ pub const RV32Operation = enum {
     /// zero-extends
     lhu,
 
-    /// Environment call
-    /// Transfer control to OS
-    ecall,
-
-    /// Environment Break
-    /// Transfer control to debugger
-    ebreak,
-
     /// Store Byte
     /// M[rs1+imm][0:7] = rs2[0:7]
     sb,
@@ -199,4 +191,54 @@ pub const RV32Operation = enum {
     /// Store Word
     /// M[rs1+imm][0:31] = rs2[0:31]
     sw,
+
+    /// Branch ==
+    /// if(rs1 == rs2) PC += imm
+    beq,
+
+    /// Branch !=
+    /// if(rs1 != rs2) PC += imm
+    bne,
+
+    /// Branch <
+    /// if(rs1 < rs2) PC += imm
+    blt,
+
+    /// Branch >=
+    /// if(rs1 >= rs2) PC += imm
+    bge,
+
+    /// Branch < (U)
+    /// if(rs1 < rs2) PC += imm
+    /// zero-extends
+    bltu,
+
+    /// Branch >= (U)
+    /// if(rs1 >= rs2) PC += imm
+    /// zero-extends
+    bgeu,
+
+    /// Jump And Link
+    /// rd = PC+4; PC += imm
+    jal,
+
+    /// Jump and Link Reg
+    /// rd = PC+4; PC = rs1 + imm
+    jalr,
+
+    /// Load Upper Imm
+    /// rd = imm << 12
+    lui,
+
+    /// Add Upper Imm to PC
+    /// rd = PC + (imm << 12)
+    auipc,
+
+    /// Environment call
+    /// Transfer control to OS
+    ecall,
+
+    /// Environment Break
+    /// Transfer control to debugger
+    ebreak,
 };
