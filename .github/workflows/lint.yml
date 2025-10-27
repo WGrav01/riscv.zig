@@ -24,8 +24,8 @@ jobs:
         with:
           path: /tmp/zlint/zig-out/bin/zlint
           key: ${{ runner.os }}-zlint-v1
-        restore-keys: |
-          ${{ runner.os }}-zlint-
+          restore-keys: |
+            ${{ runner.os }}-zlint-
 
       - name: Build zlint
         if: steps.cache-zlint.outputs.cache-hit != 'true'
