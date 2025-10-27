@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Zig
+      - name: Setup Zig for building linter
         uses: mlugg/setup-zig@v2
         with:
           version: 0.14.1
@@ -31,6 +31,11 @@ jobs:
           cd /tmp/zlint
           zig build --release=safe
           sudo cp zig-out/bin/zlint /usr/local/bin/
+
+      - name: Setup Zig for project
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.1
 
       - name: Run zlint
         run: |
