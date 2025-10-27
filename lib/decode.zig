@@ -386,6 +386,7 @@ pub const Instructions = struct {
             std.log.warn("Skipping U-type instruction 0x{X} due to attempted write to x0. i = {d}\n", .{ instructions.instruction[i], i });
             return;
         }
+
         std.log.debug("Validated and appending instruction 0x{X} of opcode 0x{X} from address 0x{X}. i = {d}\n", .{ instructions.instruction[i], opcode, instructions.base + (i * 4), i });
 
         try self.loc.append(allocator, instructions.base + (i * 4));
