@@ -1,7 +1,7 @@
 .{
     .name = .riscv,
     .version = "0.0.0",
-    .fingerprint = 0x7f6b302756cc6548, // Changing this has security and trust implications.
+    .fingerprint = 0xa21fc65fca4cd436, // Changing this has security and trust implications.
     .minimum_zig_version = "0.15.1",
     .dependencies = .{},
     .paths = .{
