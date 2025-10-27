@@ -1,0 +1,45 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.1
+
+      - name: Cache zlint
+        uses: actions/cache@v3
+        with:
+          path: /tmp/zlint/zig-out
+          key: ${{ runner.os }}-zlint-${{ hashFiles('/tmp/zlint/**') }}
+
+      - name: Install zlint
+        if: steps.cache-zlint.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/DonIsaac/zlint.git /tmp/zlint
+          cd /tmp/zlint
+          zig build --release=safe
+          sudo cp zig-out/bin/zlint /usr/local/bin/
+
+      - name: Run zlint
+        run: |
+          zlint | tee zlint_output.txt
+          cat zlint_output.txt
+          warning_count=$(grep -c '⚠' zlint_output.txt)
+          error_count=$(grep -c '𝙭' zlint_output.txt)
+          echo "${warning_count} warnings detected, ${error_count} errors detected"
+          rm zlint_output.txt
+          if [[ "$warning_count" -gt "0" ]] || [[ "$error_count" -gt "0" ]]; then
+              exit 1
+          fi
