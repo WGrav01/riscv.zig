@@ -22,7 +22,7 @@ pub const DRAM = struct {
     alloc: *std.mem.Allocator,
 
     /// Create an allocate a DRAM struct
-    pub inline fn init(size: usize, allocator: *std.mem.Allocator, base: ?usize) !DRAM {
+    pub inline fn init(allocator: *std.mem.Allocator, size: usize, base: ?usize) !DRAM {
         return DRAM{
             .size = size,
             .base = base orelse default_base,
