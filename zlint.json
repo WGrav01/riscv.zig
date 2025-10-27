@@ -6,7 +6,7 @@
         "duplicate-case": "warn",
         "empty-file": "warn",
         "homeless-try": "error",
-        "line-length": "warn",
+        "line-length": "off",
         "must-return-ref": "warn",
         "no-catch-return": "warn",
         "no-print": "warn",
