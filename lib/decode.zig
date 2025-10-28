@@ -299,7 +299,7 @@ pub const Instructions = struct {
                         }
                     }
                 },
-                else => continue,
+                else => std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having an unknown opcode of 0x{X}\n", .{ instructions.instruction[i], i, instructions.opcode[i] }),
             }
         }
     }
