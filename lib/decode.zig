@@ -130,48 +130,21 @@ pub const Instructions = struct {
     /// The operation name (opcode)
     op: ArrayList(isa.RV32_Operation),
 
-    /// The destination register.
-    /// This is present in all instruction types except for S and B, where it uses imm[4:0] and imm[4:1|11], likewise
-    rd: ArrayList(?u5),
+    /// Register fields packed together (3 x 5 bits = 15 bits, fits in u16)
+    /// Format: [unused:1][rd:5][rs1:5][rs2:5]
+    regs: ArrayList(u16),
 
-    /// The first source register for the instruction. Like funct3, it is present in all instruction types except for U and J.
-    rs1: ArrayList(?u5),
-
-    /// The second source register to be used in the instruction. Present in R, S, and B instruction types.
-    rs2: ArrayList(?u5),
-
-    /// A last 7 bits specifying additional execution details in an R type instruction.
-    funct7: ArrayList(?u7),
-
-    /// I-type immediate value: imm[11:0], replacing the rd field.
-    imm_i: ArrayList(?i32), // All immediate fields are signed
-
-    /// S-type: imm[11:5|4:0]
-    imm_s: ArrayList(?i32),
-
-    /// B-type: imm[12|10:5|4:1|11]
-    imm_b: ArrayList(?i32),
-
-    /// U-type: imm[31:12]
-    imm_u: ArrayList(?i32),
-
-    /// J-type: imm[20|10:1|11|19:12]
-    imm_j: ArrayList(?i32),
+    /// Immediate value (only one immediate per instruction type, if it is even used anyways)
+    /// Use i32 for all immediates because they're sign extended
+    imm: ArrayList(i32),
 
     /// Returns an empty instruction SoA with initialized (empty) ArrayList values
     pub fn init() Instructions {
         return Instructions{
             .loc = ArrayList(usize).empty,
             .op = ArrayList(isa.RV32Operation).empty,
-            .rd = ArrayList(?u5).empty,
-            .rs1 = ArrayList(?u5).empty,
-            .rs2 = ArrayList(?u5).empty,
-            .funct7 = ArrayList(?u5).empty,
-            .imm_i = ArrayList(?i32).empty,
-            .imm_s = ArrayList(?i32).empty,
-            .imm_b = ArrayList(?i32).empty,
-            .imm_u = ArrayList(?i32).empty,
-            .imm_j = ArrayList(?i32).empty,
+            .regs = ArrayList(u16).empty,
+            .imm = ArrayList(i32).empty,
         };
     }
 
@@ -179,15 +152,28 @@ pub const Instructions = struct {
     pub fn deinit(self: *Instructions, allocator: Allocator) void {
         self.loc.deinit(allocator);
         self.op.deinit(allocator);
-        self.rd.deinit(allocator);
-        self.rs1.deinit(allocator);
-        self.rs2.deinit(allocator);
-        self.funct7.deinit(allocator);
-        self.imm_i.deinit(allocator);
-        self.imm_s.deinit(allocator);
-        self.imm_b.deinit(allocator);
-        self.imm_u.deinit(allocator);
-        self.imm_j.deinit(allocator);
+        self.regs.deinit(allocator);
+        self.imm.deinit(allocator);
+    }
+
+    /// Pack the rd, rs1, and rs2 values into a single u16 to append to .regs
+    inline fn packRegs(rd: u5, rs1: u5, rs2: u5) u16 {
+        return (@as(u16, rd) << 10) | (@as(u16, rs1) << 5) | @as(u16, rs2);
+    }
+
+    /// Extract rd from packed register field
+    pub inline fn getRd(regs: u16) u5 {
+        return @truncate((regs >> 10) & 0x1f);
+    }
+
+    /// Extract rs1 from packed register field
+    pub inline fn getRs1(regs: u16) u5 {
+        return @truncate((regs >> 5) & 0x1f);
+    }
+
+    /// Extract rs2 from packed register field
+    pub inline fn getRs2(regs: u16) u5 {
+        return @truncate(regs & 0x1f);
     }
 
     pub fn validateAndPack(self: *Instructions, allocator: Allocator, comptime len: usize, instructions: Decoder(len)) !void {
@@ -329,17 +315,8 @@ pub const Instructions = struct {
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
-        try self.rd.append(allocator, instructions.rd[i]);
-
-        try self.rd.append(allocator, instructions.rd[i]);
-        try self.rs1.append(allocator, instructions.rs1[i]);
-        try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.imm_i.append(allocator, null);
-        try self.imm_s.append(allocator, null);
-        try self.imm_b.append(allocator, null);
-        try self.imm_u.append(allocator, null);
-        try self.imm_j.append(allocator, null);
+        try self.regs.append(allocator, packRegs(instructions.rd[i], instructions.rs1[i], instructions.rs2[i]));
+        try self.imm.append(allocator, 0); // R type has no immediate.
     }
 
     /// Appends the relevant fields for an I type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
@@ -353,17 +330,8 @@ pub const Instructions = struct {
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
-        try self.rd.append(allocator, instructions.rd[i]);
-
-        try self.rd.append(allocator, instructions.rd[i]);
-        try self.rs1.append(allocator, instructions.rs1[i]);
-        try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.imm_i.append(allocator, instructions.imm_i[i]);
-        try self.imm_s.append(allocator, null);
-        try self.imm_b.append(allocator, null);
-        try self.imm_u.append(allocator, null);
-        try self.imm_j.append(allocator, null);
+        try self.regs.append(allocator, packRegs(instructions.rd[i], instructions.rs1[i], instructions.rs2[i]));
+        try self.imm.append(allocator, instructions.imm_i[i]);
     }
 
     /// Appends the relevant fields for a S type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
@@ -372,17 +340,8 @@ pub const Instructions = struct {
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
-        try self.rd.append(allocator, instructions.rd[i]);
-
-        try self.rd.append(allocator, instructions.rd[i]);
-        try self.rs1.append(allocator, instructions.rs1[i]);
-        try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.imm_i.append(allocator, null);
-        try self.imm_s.append(allocator, instructions.imm_s[i]);
-        try self.imm_b.append(allocator, null);
-        try self.imm_u.append(allocator, null);
-        try self.imm_j.append(allocator, null);
+        try self.regs.append(allocator, packRegs(0b00000, instructions.rs1[i], instructions.rs2[i])); // rd isn't actually used here so it shouldn't be used
+        try self.imm.append(allocator, instructions.imm_s[i]);
     }
 
     /// Appends the relevant fields for a B type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
@@ -391,17 +350,8 @@ pub const Instructions = struct {
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
-        try self.rd.append(allocator, instructions.rd[i]);
-
-        try self.rd.append(allocator, instructions.rd[i]);
-        try self.rs1.append(allocator, instructions.rs1[i]);
-        try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.imm_i.append(allocator, null);
-        try self.imm_s.append(allocator, null);
-        try self.imm_b.append(allocator, instructions.imm_b[i]);
-        try self.imm_u.append(allocator, null);
-        try self.imm_j.append(allocator, null);
+        try self.regs.append(allocator, packRegs(0b00000, instructions.rs1[i], instructions.rs2[i])); // rd isn't actually used here so it shouldn't be used but needs to be appended anyways
+        try self.imm.append(allocator, instructions.imm_b[i]);
     }
 
     /// Appends the relevant fields for an U type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
@@ -415,17 +365,8 @@ pub const Instructions = struct {
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
-        try self.rd.append(allocator, instructions.rd[i]);
-
-        try self.rd.append(allocator, instructions.rd[i]);
-        try self.rs1.append(allocator, instructions.rs1[i]);
-        try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.imm_i.append(allocator, null);
-        try self.imm_s.append(allocator, null);
-        try self.imm_b.append(allocator, null);
-        try self.imm_u.append(allocator, instructions.imm_u[i]);
-        try self.imm_j.append(allocator, null);
+        try self.regs.append(allocator, packRegs(instructions.rd[i], instructions.rs1[i], instructions.rs2[i]));
+        try self.imm.append(allocator, instructions.imm_u[i]);
     }
 
     /// Appends the relevant fields for a J type instruction to the validated instruction structure of arrays, appending null for the fields that aren't used
@@ -439,16 +380,7 @@ pub const Instructions = struct {
 
         try self.loc.append(allocator, instructions.base + (i * 4));
         try self.op.append(allocator, opcode);
-        try self.rd.append(allocator, instructions.rd[i]);
-
-        try self.rd.append(allocator, instructions.rd[i]);
-        try self.rs1.append(allocator, instructions.rs1[i]);
-        try self.rs2.append(allocator, instructions.rs2[i]);
-
-        try self.imm_i.append(allocator, null);
-        try self.imm_s.append(allocator, null);
-        try self.imm_b.append(allocator, null);
-        try self.imm_u.append(allocator, null);
-        try self.imm_j.append(allocator, instructions.imm_j[i]);
+        try self.regs.append(allocator, packRegs(instructions.rd[i], instructions.rs1[i], instructions.rs2[i])); // rs1 and rs2 aren't relevant here but get applied anyways
+        try self.imm.append(allocator, instructions.imm_j[i]);
     }
 };
