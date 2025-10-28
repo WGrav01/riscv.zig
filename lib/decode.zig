@@ -189,7 +189,7 @@ pub const Instructions = struct {
                             }
                         },
                         0x1 => {
-                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, instructions, isa.RV32Operation.sll) else {
+                            if (instructions.funct7[i] == 0x00) try self.appendInstructionR(allocator, len, i, instructions, isa.RV32Operation.sll) else {
                                 std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid R-type opcode, funct3 of 0x{X}, but an invalid funct7 of 0x{X}.\n", .{ instructions.instruction[i], i, instructions.funct3[i], instructions.funct7[i] });
                             }
                         },
