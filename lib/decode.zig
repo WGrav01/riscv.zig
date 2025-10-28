@@ -6,7 +6,7 @@ pub const DecodeError = error{
 
 /// Struct that holds a batch of instructions in vector form for the first stage of decoding.
 /// The decode function is ran at comptime as the vectors' length needs to be known then, and unless the instructions are comptime known, the instructions will be decoded at runtime by calling the decode function.
-pub fn Decoder(comptime len: usize, base: usize) type {
+pub fn Decoder(comptime len: usize, base: usize) !type {
     if (base % 4 != 0) return DecodeError.MisalignedMemoryBase;
 
     return struct {

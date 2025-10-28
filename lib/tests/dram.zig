@@ -3,7 +3,7 @@ const riscv = @import("riscv");
 
 test "Check that DRAM inits and allocates correctly " {
     var test_allocator = std.testing.allocator;
-    var testing_dram = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var testing_dram = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer testing_dram.deinit();
 
     try std.testing.expect(testing_dram.mem.len == 256);
@@ -11,7 +11,7 @@ test "Check that DRAM inits and allocates correctly " {
 
 test "DRAM basic store/load, 8 bits" {
     var test_allocator = std.testing.allocator;
-    var testing_dram = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var testing_dram = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer testing_dram.deinit();
 
     try testing_dram.store8(testing_dram.base + 0, 0xAB);
@@ -20,7 +20,7 @@ test "DRAM basic store/load, 8 bits" {
 
 test "DRAM basic store/load, 16 bits" {
     var test_allocator = std.testing.allocator;
-    var testing_dram = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var testing_dram = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer testing_dram.deinit();
 
     try testing_dram.store16(testing_dram.base + 2, 0x1234);
@@ -29,7 +29,7 @@ test "DRAM basic store/load, 16 bits" {
 
 test "DRAM basic store/load, 32 bits" {
     var test_allocator = std.testing.allocator;
-    var testing_dram = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var testing_dram = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer testing_dram.deinit();
 
     try testing_dram.store32(testing_dram.base + 4, 0xDEADBEEF); // magical
@@ -38,7 +38,7 @@ test "DRAM basic store/load, 32 bits" {
 
 test "DRAM basic store/load, 64 bits" {
     var test_allocator = std.testing.allocator;
-    var testing_dram = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var testing_dram = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer testing_dram.deinit();
 
     try testing_dram.store64(testing_dram.base + 8, 0x0123456789ABCDEF);
@@ -47,7 +47,7 @@ test "DRAM basic store/load, 64 bits" {
 
 test "DRAM basic store/load, 128 bits" {
     var test_allocator = std.testing.allocator;
-    var testing_dram = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var testing_dram = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer testing_dram.deinit();
 
     try testing_dram.store128(testing_dram.base + 16, 0x0123456789ABCDEF0123456789ABCDEF);
@@ -56,7 +56,7 @@ test "DRAM basic store/load, 128 bits" {
 
 test "Endian and byte layout" {
     var test_allocator = std.testing.allocator;
-    var d = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var d = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer d.deinit();
 
     const addr = d.base + 0;
@@ -78,7 +78,7 @@ test "Endian and byte layout" {
 
 test "Bounds checking" {
     var test_allocator = std.testing.allocator;
-    var d = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var d = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer d.deinit();
 
     try std.testing.expectError(riscv.dram.DRAMError.OutOfBounds, d.store8(d.base + 256, 0xAB));
@@ -102,7 +102,7 @@ test "Bounds checking" {
 
 test "Extreme OOB value" {
     var test_allocator = std.testing.allocator;
-    var d = try riscv.dram.DRAM.init(256, &test_allocator, null);
+    var d = try riscv.dram.DRAM.init(&test_allocator, 256, null);
     defer d.deinit();
 
     const max_usize = std.math.maxInt(usize);
@@ -115,14 +115,14 @@ test "Extreme OOB value" {
 test "OOB with custom base address" {
     var test_allocator = std.testing.allocator;
     const custom_base = 0x12340000;
-    var d = try riscv.dram.DRAM.init(256, &test_allocator, custom_base);
+    var d = try riscv.dram.DRAM.init(&test_allocator, 256, custom_base);
     defer d.deinit();
 
     try std.testing.expectError(riscv.dram.DRAMError.OutOfBounds, d.load32(custom_base - 4));
 
     try std.testing.expectError(riscv.dram.DRAMError.OutOfBounds, d.store64(custom_base + 256, 0xFFFFFFFFFFFFFFFF));
 
+    // Make sure everything still works
     try d.store32(custom_base + 100, 0xDEADBEEF);
-    try std.testing.expectEqual(@as(u32, 0xDEADBEEF), // Magical
-        try d.load32(custom_base + 100));
+    try std.testing.expectEqual(@as(u32, 0xDEADBEEF), try d.load32(custom_base + 100));
 }
