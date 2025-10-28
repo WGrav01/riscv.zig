@@ -280,12 +280,12 @@ pub const Instructions = struct {
                 },
                 0b1100111 => {
                     if (instructions.funct3[i] == 0x0) {
-                        try self.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jal);
+                        try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jalr);
                     } else std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid jal opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] });
                 },
                 0b1101111 => {
                     if (instructions.funct3[i] == 0x0) {
-                        try self.appendInstructionI(allocator, len, i, instructions, isa.RV32Operation.jal);
+                        try self.appendInstructionJ(allocator, len, i, instructions, isa.RV32Operation.jal);
                     } else std.log.debug("Skipping instruction 0x{X} (i = {d}) due to having valid jalr opcode but invalid funct3 of 0x{X}\n", .{ instructions.instruction[i], i, instructions.funct3[i] });
                 },
                 0b0110111 => try self.appendInstructionU(allocator, len, i, instructions, isa.RV32Operation.lui),
